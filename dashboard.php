@@ -42,6 +42,28 @@ $low_stock = mysqli_query(
      LIMIT 6"
 );
 
+$top_sellers = mysqli_query(
+    $sales_conn,
+    "SELECT p.product_name, SUM(s.quantity_sold) AS total_qty, SUM(s.total_price) AS total_revenue
+     FROM sales s
+     JOIN petshop_inventory.products p ON s.product_id = p.id
+     GROUP BY s.product_id
+     ORDER BY total_qty DESC
+     LIMIT 5"
+);
+
+$top_seller = mysqli_fetch_assoc(
+    mysqli_query(
+        $sales_conn,
+        "SELECT p.product_name, SUM(s.quantity_sold) AS total_qty
+         FROM sales s
+         JOIN petshop_inventory.products p ON s.product_id = p.id
+         GROUP BY s.product_id
+         ORDER BY total_qty DESC
+         LIMIT 1"
+    )
+);
+
 $chart_labels = [];
 $chart_values = [];
 while ($row = mysqli_fetch_assoc($category_stats)) {
@@ -73,6 +95,14 @@ while ($row = mysqli_fetch_assoc($category_stats)) {
     </div>
 
     <div class="card stat-card">
+        <h3>Top Seller</h3>
+        <p class="stat-number"><?php echo htmlspecialchars($top_seller['product_name'] ?? 'N/A'); ?></p>
+        <p style="margin-top: 10px; font-size: 0.95rem; color: #7c4bb5; font-weight: 600;">
+            <?php echo (int) ($top_seller['total_qty'] ?? 0); ?> sold
+        </p>
+    </div>
+
+    <div class="card stat-card">
         <h3>Total Stock Quantity</h3>
         <p class="stat-number"><?php echo (int) $total_stock['total_stock']; ?></p>
     </div>
@@ -89,6 +119,26 @@ while ($row = mysqli_fetch_assoc($category_stats)) {
             <canvas id="categoryChart" height="220"></canvas>
         <?php else: ?>
             <div class="empty-chart">No categories available yet. Add categories to populate the chart.</div>
+        <?php endif; ?>
+    </div>
+
+    <div class="card low-stock-card">
+        <div class="chart-header">
+            <h3>Top Selling Products</h3>
+            <p>These products have the highest units sold.</p>
+        </div>
+
+        <?php if (mysqli_num_rows($top_sellers)) : ?>
+            <ul class="low-stock-list">
+                <?php while ($row = mysqli_fetch_assoc($top_sellers)) : ?>
+                    <li>
+                        <span class="product-name"><?php echo htmlspecialchars($row['product_name']); ?></span>
+                        <span class="product-count"><?php echo (int) $row['total_qty']; ?> sold</span>
+                    </li>
+                <?php endwhile; ?>
+            </ul>
+        <?php else: ?>
+            <div class="empty-chart">No sales recorded yet to display top sellers.</div>
         <?php endif; ?>
     </div>
 
