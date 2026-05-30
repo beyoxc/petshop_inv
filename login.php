@@ -50,7 +50,7 @@ if (isset($_POST['login'])) {
             min-height: 100vh;
             display: flex;
             align-items: center;
-            justify-content: space-around;
+            justify-content: center;
             background-image: url('assets/images/image.png');
             background-size: cover;
             background-position: center;
@@ -117,14 +117,15 @@ if (isset($_POST['login'])) {
 
         .login-wrapper {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 24px;
             padding: 40px;
-            padding-right: 80px;
             position: relative;
             z-index: 2;
-            flex: 0 0 auto;
-            width: auto;
+            width: 100%;
+            min-height: 100vh;
         }
 
         .login-card {
@@ -140,8 +141,16 @@ if (isset($_POST['login'])) {
         .logo-section {
             display: flex;
             justify-content: center;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
             animation: slideDown 0.6s ease-out;
+        }
+
+        .logo-section img {
+            width: 360px;
+            max-width: 100%;
+            height: auto;
+            border-radius: 0;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
         }
 
         .logo-container {
@@ -351,13 +360,10 @@ if (isset($_POST['login'])) {
 </head>
 
 <body>
-    <div class="logo-display">
-        <div class="logo-display-container">
-            <img src="assets/images/image%20copy%202.png" alt="Just 4 Paws Logo" class="logo-image">
-        </div>
-    </div>
-    
     <div class="login-wrapper">
+        <div class="logo-section">
+            <img src="assets/images/image%20copy%202.png" alt="Just 4 Paws Logo">
+        </div>
         <div class="login-card">
             <div class="login-header">
                 <h1>Sign In</h1>
